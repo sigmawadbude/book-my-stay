@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "name": "Grand Palace Hotel",
+    "type": "Luxury",
+    "rating": 4.8,
+    "city": "Paris",
+    "country": "France",
+    "price": 320
+  },
+  {
+    "id": 2,
+    "name": "City Comfort Inn",
+    "type": "Budget",
+    "rating": 3.6,
+    "city": "Berlin",
+    "country": "Germany",
+    "price": 95
+  },
+  {
+    "id": 3,
+    "name": "Ocean View Resort",
+    "type": "Resort",
+    "rating": 4.5,
+    "city": "Malibu",
+    "country": "USA",
+    "price": 280
+  },
+  {
+    "id": 4,
+    "name": "Mountain Escape Lodge",
+    "type": "Boutique",
+    "rating": 4.3,
+    "city": "Interlaken",
+    "country": "Switzerland",
+    "price": 210
+  },
+  {
+    "id": 5,
+    "name": "The Royal Orchid",
+    "type": "Luxury",
+    "rating": 4.9,
+    "city": "Bangalore",
+    "country": "India",
+    "price": 180
+  },
+  {
+    "id": 6,
+    "name": "Downtown Suites",
+    "type": "Business",
+    "rating": 4.1,
+    "city": "New York",
+    "country": "USA",
+    "price": 190
+  },
+  {
+    "id": 7,
+    "name": "Desert Mirage Hotel",
+    "type": "Resort",
+    "rating": 4.0,
+    "city": "Dubai",
+    "country": "UAE",
+    "price": 260
+  },
+  {
+    "id": 8,
+    "name": "Cozy Stay Inn",
+    "type": "Budget",
+    "rating": 3.8,
+    "city": "Prague",
+    "country": "Czech Republic",
+    "price": 85
+  },
+  {
+    "id": 9,
+    "name": "Skyline Business Hotel",
+    "type": "Business",
+    "rating": 4.2,
+    "city": "Tokyo",
+    "country": "Japan",
+    "price": 220
+  },
+  {
+    "id": 10,
+    "name": "Sunny Sands Resort",
+    "type": "Resort",
+    "rating": 4.7,
+    "city": "Phuket",
+    "country": "Thailand",
+    "price": 150
+  }
+]
