@@ -4,27 +4,41 @@ const path = require("path");
 
 const app = express();
 
+app.use(express.json());
+
 let hotels = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "./data/hotels.json"))
+    fs.readFileSync(path.join(__dirname, "./data/hotels.json"))
 );
 
-/**
- * @swagger
- * /api/v1/hotels:
- *   get:
- *     summary: Get all hotels.
- *     description: Retrieve a list of all available hotels.
- *     responses:
- *       200:
- *         description: A successful response with the list of hotels.
- */
 app.get("/api/v1/hotels", (req, res) => {
-  res.status(200).json({
-    status: "success",
-    data: {
-      hotels,
-    },
-  });
+    res.status(200).json({
+        status: "success",
+        data: {
+            hotels,
+        },
+    });
 });
+
+app.post("/api/v1/hotels", (req, res) => {
+    const newId =
+        hotels[hotels.length - 1].id + 1 || Math.floor(Math.random() * 999);
+    const newHotel = Object.assign({ id: newId }, req.body);
+    hotels.push(newHotel);
+    fs.writeFile(dataPath, JSON.stringify(hotels, null, 2), (err) => {
+        if (err) {
+            console.error("Error writing hotels file:", err);
+            return res.status(500).json({ status: "error", message: "Failed to save hotel data" });
+        }
+
+        res.status(201).json({
+            status: "success",
+            data: {
+                hotel: newHotel,
+            },
+        });
+    });
+});
+
+
 
 module.exports = app;
