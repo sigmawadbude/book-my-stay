@@ -8,6 +8,23 @@ let hotels = JSON.parse(
     fs.readFileSync(dataPath)
 );
 
+const checkBodyFields = (body) => {
+    const requiredFields = ["name", "city", "price"];
+    for (const field of requiredFields) {
+        if (!(field in body)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+const validateBody = (req, res, next) => {
+    if (!checkBodyFields(req.body)) {
+        return res.status(400).json({ status: "error", message: "Invalid request body" });
+    }
+    next();
+}
+
 const getAll = (req, res) => {
     res.status(200).json({
         status: "success",
@@ -94,4 +111,4 @@ const deleteHotel = (req, res) => {
 };
 
 
-module.exports = { getAll, create, getById, update, deleteHotel }
+module.exports = { getAll, create, getById, update, deleteHotel, validateBody }
