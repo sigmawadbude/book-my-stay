@@ -1,18 +1,12 @@
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
-const hotelController = require("./controller/hotelsController");
+const hotelsRouter = require("./routes/hotels.routes");
+const userRouter = require("./routes/users.routes");
 
 const app = express();
 
 app.use(express.json());
 
-app.route("/api/v1/hotels")
-    .get(hotelController.getAll)
-    .post(hotelController.create);
-app.route("/api/v1/hotels/:id")
-    .get(hotelController.getById)
-    .patch(hotelController.update)
-    .delete(hotelController.deleteHotel);
+app.use("/api/v1/hotels", hotelsRouter);
+app.use("/api/v1/users", userRouter);
 
 module.exports = app;
