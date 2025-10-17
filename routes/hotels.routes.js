@@ -1,10 +1,10 @@
 const express = require("express");
-const hotels = require("../controller/hotels.controller");
+const hotels = require("../controllers/hotels.controller");
 const r = express.Router();
 
 r.route("/")
     .get(hotels.getAll)
-    .post(hotels.validateBody, hotels.create);
+    .post(hotels.create);
 r.route("/:id")
     .get(hotels.getById)
     .patch(hotels.update)
