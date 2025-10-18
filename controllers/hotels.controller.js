@@ -1,60 +1,72 @@
 const Hotel = require("../models/hotels");
 
 function getQueryOptions(query) {
-  let queryStr = {};
-  for (let key in query) {
-    const value = query[key];
-    const match = key.match(/^(.*)\[(gt|gte|lt|lte)\]$/);
+    let queryStr = {};
+    for (let key in query) {
+        const value = query[key];
+        const match = key.match(/^(.*)\[(gt|gte|lt|lte)\]$/);
 
-    if (match) {
-      const fieldName = match[1];
-      const operator = `$${match[2]}`;
+        if (match) {
+            const fieldName = match[1];
+            const operator = `$${match[2]}`;
 
-      if (!queryStr[fieldName]) {
-        queryStr[fieldName] = { [operator]: value };
-      } else {
-        queryStr[fieldName][operator] = value;
-      }
-    } else {
-      queryStr[key] = value;
+            if (!queryStr[fieldName]) {
+                queryStr[fieldName] = { [operator]: value };
+            } else {
+                queryStr[fieldName][operator] = value;
+            }
+        } else {
+            queryStr[key] = value;
+        }
     }
-  }
-  return queryStr;
+    return queryStr;
 }
 
 const getAll = async (req, res) => {
-  try {
-    const { sort, fields, ...rest } = req.query;
-    const filteredQuery = getQueryOptions(rest);
-    let query = Hotel.find(filteredQuery);
-    // sorting
-    if (sort) {
-      const sortBy = req.query.sort.split(",").join(" ");
-      query = query.sort(sortBy);
-    } else {
-      query = query.sort("name");
-    }
+    try {
+        const { sort, fields, page = 1, limit = 5, ...rest } = req.query;
+        const filteredQuery = getQueryOptions(rest);
+        let query = Hotel.find(filteredQuery);
+        // sorting
+        if (sort) {
+            const sortBy = req.query.sort.split(",").join(" ");
+            query = query.sort(sortBy);
+        } else {
+            query = query.sort("name");
+        }
 
-    // fields limiting
-    if (fields) {
-      const selectedFields = req.query.fields.split(",").join(" ");
-      query.select(selectedFields);
-    } else {
-      query.select("-__v");
+        // fields limiting
+        if (fields) {
+            const selectedFields = req.query.fields.split(",").join(" ");
+            query.select(selectedFields);
+        } else {
+            query.select("-__v");
+        }
+
+        // pagination
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        query.skip(skip).limit(parseInt(limit));
+
+        // count the total number of documents that match the filter criteria
+        if(page){
+            const totalCount = await Hotel.countDocuments(filteredQuery);
+            if(skip >= totalCount){
+                throw Error('Page not found');
+            }
+        }
+
+        const hotels = await query;
+        res.status(200).json({
+            status: "success",
+            results: hotels.length,
+            data: hotels
+        });
+    } catch (err) {
+        res.status(404).json({
+            status: "fail",
+            message: err.message,
+        });
     }
-    
-    const hotels = await query;
-    res.status(200).json({
-      status: "success",
-      results: hotels.length,
-      data: hotels
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err.message,
-    });
-  }
 };
 
 
