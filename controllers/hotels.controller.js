@@ -1,21 +1,53 @@
 const Hotel = require("../models/hotels");
 
-const getAll = async (req, res) => {
-    try {
-        const hotels = await Hotel.find({});
-        res.status(200).json({
-            status: "success",
-            results: hotels.length,
-            data: hotels
-        });
-    } catch (err) {
-        res.status(404).json({
-            status: "fail",
-            message: err.message,
-        })
-    }
+function getQueryOptions(query) {
+  let queryStr = {};
+  for (let key in query) {
+    const value = query[key];
+    const match = key.match(/^(.*)\[(gt|gte|lt|lte)\]$/);
 
+    if (match) {
+      const fieldName = match[1];
+      const operator = `$${match[2]}`;
+
+      if (!queryStr[fieldName]) {
+        queryStr[fieldName] = { [operator]: value };
+      } else {
+        queryStr[fieldName][operator] = value;
+      }
+    } else {
+      queryStr[key] = value;
+    }
+  }
+  return queryStr;
+}
+
+const getAll = async (req, res) => {
+  try {
+    const { sort, ...rest } = req.query;
+    const filteredQuery = getQueryOptions(rest);
+    let query = Hotel.find(filteredQuery);
+    // sorting
+    if (sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort("name");
+    }
+    const hotels = await query;
+    res.status(200).json({
+      status: "success",
+      results: hotels.length,
+      data: hotels
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
 };
+
 
 const create = async (req, res) => {
     try {
