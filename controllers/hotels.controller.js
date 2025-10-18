@@ -24,7 +24,7 @@ function getQueryOptions(query) {
 
 const getAll = async (req, res) => {
   try {
-    const { sort, ...rest } = req.query;
+    const { sort, fields, ...rest } = req.query;
     const filteredQuery = getQueryOptions(rest);
     let query = Hotel.find(filteredQuery);
     // sorting
@@ -34,6 +34,15 @@ const getAll = async (req, res) => {
     } else {
       query = query.sort("name");
     }
+
+    // fields limiting
+    if (fields) {
+      const selectedFields = req.query.fields.split(",").join(" ");
+      query.select(selectedFields);
+    } else {
+      query.select("-__v");
+    }
+    
     const hotels = await query;
     res.status(200).json({
       status: "success",
